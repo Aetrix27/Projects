@@ -1,0 +1,31 @@
+function Cheese(xPos,yPos) {
+	this.x = xPos,
+	this.y = yPos,
+	this.draw = function() {
+		ctx.translate(this.x,this.y);
+		ctx.beginPath();
+		ctx.fillStyle = "#FFDD6E";
+		ctx.moveTo(0,0);
+		ctx.lineTo(29,10);
+		ctx.lineTo(-10,10);
+		ctx.lineTo(0,0);
+		ctx.fill();
+		ctx.stroke();
+		ctx.moveTo(-10,10);
+		ctx.lineTo(-10,30);
+		ctx.lineTo(33,30);
+		ctx.lineTo(33,10);
+		ctx.fill();
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.fillStyle = "#FFD16E";
+		ctx.arc(0, 15, 5, 0, 2*Math.PI);
+		ctx.fill();
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(20, 25, 5, 0, 2*Math.PI);
+		ctx.fill();
+		ctx.stroke();
+		ctx.translate(-this.x,-this.y);
+	}
+}

@@ -1,0 +1,77 @@
+function Room(startX,startY,endX,endY) {
+	this.doorX = endX,
+	this.doorY = endY,
+	this.sDoorX = startX,
+	this.sDoorY = startY,
+	this.draw = function() {
+		ctx.fillStyle = "#916A33";
+		ctx.fillRect(0,0,850,850);
+		ctx.strokeStyle = "#000";
+		ctx.lineWidth=2;
+		ctx.stroke();
+		
+		ctx.beginPath();
+		ctx.moveTo(50, 20);
+		ctx.lineTo(20, 100);
+		ctx.lineTo(70, 130);
+		ctx.lineTo(30, 150);
+		ctx.stroke();
+		
+		ctx.beginPath();
+		ctx.moveTo(250, 390);
+		ctx.lineTo(230, 430);
+		ctx.lineTo(190, 400);
+		ctx.stroke();
+		
+		ctx.beginPath();
+		ctx.arc(600, 350, 10, 0, 2 * Math.PI);
+		ctx.fillStyle = "black";
+		ctx.fill();
+	
+
+		for (var i=1; i<26; i++) {
+			ctx.moveTo(i*34,0);
+			ctx.lineTo(i*34,850);
+			ctx.stroke();
+		}
+		//tile
+		//ctx.fillStyle = "#9E9E9E";
+		//ctx.fillRect(0,0,850,850);
+		//ctx.strokeStyle = "#000";
+		//for (var i=1; i<11; i++) {
+		//	ctx.moveTo(0,i*85);
+		//	ctx.lineTo(850,i*85);
+		//	ctx.stroke();
+		//}
+		//for (var i=1; i<11; i++) {
+		//	ctx.moveTo(i*85,0);
+		//	ctx.lineTo(i*85,850);
+		//	ctx.stroke();
+		//}
+		
+		//doors
+	
+		ctx.fillStyle = "#C1C1C1";
+		ctx.fillRect(startX,startY,25,170);//0,120
+		ctx.strokeRect(startX,startY,25,170);
+		if (keyObtained == false) {
+			ctx.fillStyle = "#D63E3E";
+		} else if (keyObtained == true) {
+			ctx.fillStyle = "#59F048";
+		}
+		ctx.fillRect(endX,endY,170,25);
+		ctx.strokeRect(endX,endY,170,25); //220,0
+	}
+}
+
+
+function Drawer(X,Y) {
+	this.draw = function(){
+		this.drawerX = X,
+		this.drawerY = Y,
+		ctx.beginPath();
+		ctx.rect(X, Y, 150, 100);
+		ctx.fillStyle = "red";
+		ctx.fill();
+	}
+}

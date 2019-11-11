@@ -1,0 +1,224 @@
+function Mouse(xPos,yPos,moveArray,speed) {
+	this.x = parseInt(xPos),
+	this.y = parseInt(yPos),
+	this.speed = speed;
+
+	this.draw = function() {
+		if (moveArray.length>0){
+			if (moveArray.indexOf("left")!=-1 && this.x>0){
+				this.x = this.x - this.speed;
+			}
+			if (moveArray.indexOf("right")!=-1 && this.x<=850){
+				this.x = this.x + this.speed;
+			}
+			if (moveArray.indexOf("up")!=-1 && this.y > 0){
+				this.y = this.y - this.speed;
+			}
+			if (moveArray.indexOf("down")!=-1 && this.y <= 850){
+				this.y = this.y + this.speed;
+			}
+		}
+		
+		ctx.translate(this.x,this.y);
+		ctx.scale(0.7,0.7);
+		//body
+       ctx.rect(-55,50,110,120);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+       //left arm
+       ctx.rect(-85,50,30,90);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+       //right arm
+       ctx.rect(55,50,30,90);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+       //right leg
+       ctx.rect(20,170,35,80);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+       //left leg
+       ctx.rect(-55,170,35,80);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+       
+       ctx.beginPath();
+       ctx.arc(-50,-60,34,0,2*Math.PI);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+        ctx.fill();
+       
+       ctx.beginPath();
+       ctx.arc(50,-60,34,0,2*Math.PI);
+       ctx.stroke();
+       ctx.fillStyle = '#f2f2f2';
+       ctx.fill();
+		//left ear
+        ctx.beginPath();
+       ctx.arc(-50,-60,25,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'pink';
+        ctx.fill();
+       
+        //right ear
+        ctx.beginPath();
+        ctx.arc(50,-60,25,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'pink';
+        ctx.fill();
+           
+        ctx.beginPath();
+        ctx.arc(-15,-20,5,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = 'red';
+        ctx.fill();
+		//head
+        ctx.beginPath();
+        ctx.arc(0,0,55,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = '#f2f2f2';
+        ctx.fill();
+        //left eye
+        ctx.beginPath();
+        ctx.arc(-33,-15,8,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = '#ff4d4d';
+        ctx.fill();
+        //right eye
+        ctx.beginPath();
+        ctx.arc(33,-15,8,0,2*Math.PI);
+        ctx.stroke();
+        ctx.fillStyle = '#ff4d4d';
+        ctx.fill();
+        //nose
+        ctx.beginPath();
+        ctx.moveTo(10, 0);
+        ctx.lineTo(-10, 0);
+        ctx.lineTo(0, 15);
+        ctx.fillStyle = 'pink';
+        ctx.fill();
+        //top left whisker
+        ctx.beginPath();
+        ctx.moveTo(-70, 0);
+        ctx.lineTo(-30, 20);
+        ctx.stroke();
+        //mid left whisker
+        ctx.beginPath();
+        ctx.moveTo(-80, 30);
+        ctx.lineTo(-30, 30);
+        ctx.stroke();
+        //mid bottom whisker
+        ctx.beginPath();
+        ctx.moveTo(-30, 40);
+        ctx.lineTo(-70, 60);
+        ctx.stroke();
+        //right top whisker
+        ctx.beginPath();
+        ctx.moveTo(30, 20);
+        ctx.lineTo(70, 0);
+        ctx.stroke();
+        //right mid
+        ctx.beginPath();
+        ctx.moveTo(30, 30);
+        ctx.lineTo(90, 30);
+        ctx.stroke();
+        //right bot
+        ctx.beginPath();
+        ctx.moveTo(30, 40);
+        ctx.lineTo(70, 60);
+        ctx.stroke();
+       //belt
+        ctx.rect(-55,140,110,10);
+        ctx.stroke();
+        ctx.fillStyle = 'brown';
+        ctx.fill();
+        //satchel
+        ctx.rect(20,140,30,30);
+        ctx.stroke();
+        ctx.fillStyle = 'brown';
+        ctx.fill();
+		ctx.scale(10/7,10/7);
+			//body
+			
+			/*
+			ctx.beginPath();
+			ctx.fillStyle = "red";
+			ctx.moveTo(-40,40);
+			ctx.lineTo(40,40);
+			ctx.lineTo(40,140);
+			ctx.lineTo(-40,140);
+			ctx.lineTo(-40,40);
+			ctx.fill();
+			ctx.stroke();
+			//head
+			ctx.fillStyle = "red";
+			ctx.beginPath();
+			ctx.moveTo(-50,0);
+			ctx.lineTo(-50,-60);
+			ctx.lineTo(0,-30);
+			ctx.fill();
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo(50,0);
+			ctx.lineTo(50,-60);
+			ctx.lineTo(0,-30);
+			ctx.fill();
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(0, 0, 50, 0, 2*Math.PI);
+			ctx.fill();
+			ctx.arc(0, 0, 50, 0, 2*Math.PI);
+			ctx.stroke();
+			//eyes
+			ctx.beginPath();
+			ctx.arc(-20, -5, 15, 0, 2*Math.PI);
+			var rad = ctx.createRadialGradient(-25, -10, 5, -25, -10, 10, -25, -10, 15);
+			rad.addColorStop(0,'black');
+			rad.addColorStop(0.1,'green');
+			rad.addColorStop(1,'white');
+			ctx.fillStyle = rad;
+			ctx.fill();
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(20, -5, 15, 0, 2*Math.PI);
+			var rad2 = ctx.createRadialGradient(15, -10, 5, 15, -10, 10, 15, -10, 15);
+			rad2.addColorStop(0,'black');
+			rad2.addColorStop(0.1,'green');
+			rad2.addColorStop(1,'white');
+			ctx.fillStyle = rad2;
+			ctx.fill();
+			ctx.stroke();
+			//nose
+			ctx.beginPath();
+			ctx.fillStyle = "#000";
+			ctx.moveTo(-7,10);
+			ctx.lineTo(7,10);
+			ctx.lineTo(0,15);
+			ctx.fill();
+			//brows
+			ctx.beginPath();
+			ctx.moveTo(-40,-35);
+			ctx.lineTo(-5,-20);
+			ctx.lineWidth = 3;
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.moveTo(40,-35);
+			ctx.lineTo(5,-20);
+			ctx.lineWidth = 3;
+			ctx.stroke();
+			//mouth
+			ctx.beginPath();
+			ctx.moveTo(-15,25);
+			ctx.lineTo(15,25);
+			ctx.lineWidth = 2;
+			ctx.stroke();
+			*/
+			ctx.translate(-this.x,-this.y);
+			
+	}
+}

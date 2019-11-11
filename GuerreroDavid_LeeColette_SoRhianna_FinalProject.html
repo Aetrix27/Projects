@@ -1,0 +1,356 @@
+<html>
+
+    <head>
+   	 <!--add obstacles, can't move when caught, more levels? cheese?-->
+   	 <link rel="shortcut icon" href="cheese.png" />
+   	 <title>
+   		 Mouse Quest
+   	 </title>
+   	 
+   	 <link href="https://fonts.googleapis.com/css?family=Ravi+Prakash" rel="stylesheet">
+   	 <link rel="stylesheet" type="text/css" href="style.css">
+   	 
+   	 <script src="Cat.txt"></script>
+   	 <script src="Cheese.txt"></script>
+   	 <script src="Mouse.txt"></script>
+   	 <script src="key.txt"></script>
+   	 <script src="Room.txt"></script>
+   	 <script src="script.txt"></script>
+
+    </head>
+
+    <body onkeydown="handleKeyDown(event);" onkeyup="removeKeyCode(event);">
+   	 <audio id="audio" src="music.mp3" preload="auto" loop></audio>
+   	 
+   	 <div id="startScreen">
+   		 <div id="startTitle">
+   			 Mouse Quest
+   			 <input type="button" class="start button" onclick="startGame();" value="Start"/>
+   		 </div>
+   	 </div>
+   	 <canvas id="myCanvas" width="850" height="850" style="border:1px solid black;"></canvas>
+   	 <div id="gameOver"></div>
+   	 <div id="menu">
+   		 <div id="closeButton" onclick="toggleMenu('close');"><img src="closeButton.png" width="30" height="30"/></div>
+   		 <br>
+   		 <div style="font-size:40px;">&nbsp;&nbsp;&nbsp;MENU</div><br>
+   		 <input type="button" class="options button" onclick="resetGame(roomArray[currentLevel-1].sDoorX+50,roomArray[currentLevel-1].sDoorY+50);" value="Return to Menu"/><br><br>
+   		 <input type="button" class="options button" onclick="restart(roomArray[currentLevel-1].sDoorX+50,roomArray[currentLevel-1].sDoorY+50);" value="Restart Level"/><br><br>
+   		 <input type="button" class="options button" onclick="toggleInstructions('open');" value="Instructions"/>
+   	 </div>
+   	 <div id="menubar">
+   		 <div id="level"></div>
+   		 <div id="lives"></div>
+   		 <input type="button" class="menu button" onclick="toggleMenu('open');" value="MENU"/>
+   		 <input type="image" src="volume.png" id="music" class="button" onclick="toggleVolume();" />
+   	 </div>
+   	 <div id="instructions">
+   		 <div id="closeButton" onclick="toggleInstructions('close');"><img src="closeButton.png" width="30" height="30"/></div>
+   		 <div id="heading">How To Play</div>
+   		 <div class="subheading">The Basics:</div>
+   		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Your objective is to obtain the key in the room to escape to the next room, eventually escaping the entire house, without getting caught by one of the nasty cats. Grab cheese along the way to get extra points and increased speed. <br>
+   		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The gray door is the door the mouse came from and the red door is the necessary exit door. Once the key is obtained, the door color will change to green, allowing you to proceed to the next level.<br><br>
+   		 <div class="subheading">Controls:</div>
+   		 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use the arrow keys to move horizontally, vertically, or diagonally in order to evade the cats and obtain the key.<br><br><br>
+   		 <div id="endMessage">Good Luck.</div>
+   	 </div>
+   	 
+   	 <script>
+   		 var c = document.getElementById("myCanvas");
+   		 var ctx = c.getContext("2d");
+   		 var timer;
+   		 var fadeTimer;
+   		 var blinkTimer;
+   		 var blinkCounter=1;
+   		 var currentLevel=1;
+   		 var currentLives = 3;
+   		 var keyObtained = false;
+   		 var levelWon = false;
+   		 var mouseDead = false;
+   		 var catCaught = false;
+		 var stopRight=false;
+   		 var alpha = 1;
+   		 var keysPressed = [];
+   		 var cheeseArray = [];
+   		 var roomArray = [];
+   		 var mouse1 = new Mouse(40,100,keysPressed,15);
+   		 var upDownCat = new Cat(760,100,0,10); //xPos and yPos with respect to center of head
+   		 var middleCat = new Cat(400,100,0,20);
+   		 var leftRightCat = new Cat(100,700,10,0);
+   		 var diagonalCat = new Cat(100,700,10,10);
+   		 var catArray1 = [upDownCat];
+   		 var catArray2 = [upDownCat,leftRightCat];
+   		 var catArray3 = [upDownCat,leftRightCat, middleCat];
+   		 var catArray4 = [diagonalCat, middleCat];
+   		 var catArray5 = [upDownCat,leftRightCat, middleCat,diagonalCat];
+   		 var allCats = [catArray1,catArray2,catArray3,catArray4,catArray5];
+   		 var cheese1 = new Cheese(50,750); //xPos and yPos with respect to top left corner
+   		 var cheese2 = new Cheese(750,750);
+   		 //var key = new Key(700,750);
+		 var drawer = new Drawer(200,150);
+   		 var room = new Room(0,120,220,0);
+   		 var room2 = new Room(0,420,420,0);
+   		 var room3 = new Room(0,320,150,0);
+   		 var room4 = new Room(0,220,660,0);
+   		 var room5 = new Room(0,180,600,0);
+   		 var dir = "";
+   		 var roomArray = [room, room2, room3,room4,room5];
+   		 cheeseArray.push(cheese1);
+   		 cheeseArray.push(cheese2);
+   		 console.log(cheeseArray[0]);
+   			 //delete Mouse();
+   			 //new Mouse(40,100,keysPressed,0);
+   		 timer = setInterval(function(){
+   			 ctx.clearRect(0, 0, c.width, c.height);
+   			 //room.draw();
+   			 roomArray[currentLevel-1].draw();
+   			 for(var i=0; i<allCats[currentLevel-1].length; i++) {
+   				 allCats[currentLevel-1][i].draw();
+   			 }
+   			 for(var j=0; j<cheeseArray.length; j++) {
+   				 cheeseArray[j].draw();
+   			 }
+   			 if (blinkCounter%2 == 1) {
+   				 mouse1.draw();
+   			 }
+   			 /*if (keyObtained == false) {
+   				 key.draw();
+   			 }
+   			 */
+   			 for (i=0;i<allCats[currentLevel-1].length;i++){
+   				 if (catCaught == false) {
+   					 checkCollision(mouse1,allCats[currentLevel-1][i]);
+   				 }
+   			 }
+			 drawer.draw();
+   			// checkDrawerCollision(mouse1,drawer);
+   			 //checkKeyCollision(mouse1,key);
+   			 checkDoorCollision(mouse1,roomArray[currentLevel-1]);
+   		 },30);
+   		 
+   		 //var fadeTimer = setInterval(function(){fadeOut();},50);
+   		 
+   		 function blink(){
+   			 /*if (blinkCounter<=4){
+   				 if (mouseDead==true){
+   					 mouseDead = false;
+   				 } else {
+   					 mouseDead=true;
+   				 }
+   				 blinkCounter++;
+   			 } else {
+   				 clearInterval(blinkTimer);
+   			 }
+   			 */
+   		 
+   			 if  (blinkCounter<=5){
+   				 blinkCounter++;
+   			 } else {
+   				 clearInterval(blinkTimer);
+   				 blinkCounter=1;
+   			 }
+   		 
+   			 
+   		 }
+   		 function checkCollision(mouse, object){
+   			 var mouseRight = (mouse.x+50);
+   			 var mouseLeft = (mouse.x-50);
+   			 var mouseTop = (mouse.y-50);
+   			 var mouseBottom = (mouse.y+160);
+   			 var objRight = (object.x+50);
+   			 var objLeft = (object.x-50);
+   			 var objTop = (object.y-50);
+   			 var objBottom = (object.y+140);
+			 
+		//e.keyCode == right return dir
+   			 if ((mouseRight > objLeft && mouseRight < objRight || mouseLeft > objLeft && mouseLeft < objRight) && (mouseTop > objTop && mouseTop < objBottom || mouseBottom > objTop && mouseBottom < objBottom)){
+   				 //mouseDead = true;
+   				 catCaught = true;
+   				 blinkTimer = setInterval(function(){blink();},250);
+   				 setTimeout(function(){
+   					 restart(roomArray[currentLevel-1].sDoorX+50,roomArray[currentLevel-1].sDoorY+50);
+   					 //mouseDead = false;
+   					 catCaught = false;
+   					 currentLives = currentLives-1;
+   					 updateLives(currentLives);},1250);
+   			 }
+			 if (catCaught == true){	
+   					// dir = null;
+			}
+			// return dir;
+   		 }
+   		 //function checkDrawerCollision(){
+   			 
+   		 
+   		 //}
+   		 
+   		 function checkKeyCollision(mouse,object) {
+   			 var mouseRight = (mouse.x+50);
+   			 var mouseLeft = (mouse.x-50);
+   			 var mouseTop = (mouse.y-50);
+   			 var mouseBottom = (mouse.y+160);
+   			 var objX = object.xPos;
+   			 var objY = object.yPos;
+   			 var objRight = (object.xPos+53);
+   			 var objLeft = (object.xPos-72);
+   			 var objTop = (object.yPos-53);
+   			 var objBottom = (object.yPos+72);
+   			 if (mouseRight > objX && mouseLeft < objX && mouseTop < objY && mouseBottom > objY){
+   				 keyObtained = true;
+   				 console.log("collision");
+   			 }
+   		 }
+		 //catch cheese return move function, increase
+   		 	 /*
+   		 function checkDrawerCollision(mouse,object) {
+   			 var mouseRight = (mouse.x+50);
+   			 var mouseLeft = (mouse.x-50);
+   			 var mouseTop = (mouse.y-50);
+   			 var mouseBottom = (mouse.y+160);
+   			 var objX = object.xPos;
+   			 var objY = object.yPos;
+   			 var objRight = (object.xPos+53);
+   			 var objLeft = (object.xPos-72);
+   			 var objTop = (object.yPos-53);
+   			 var objBottom = (object.yPos+72);
+   			 if (mouseRight > objX){
+   				 stopRight = true;
+   				 alert("Room object collision");
+   			 }
+			 //if collision is no longer true, allow handleKeyDown
+   		 }
+		 */
+   		 function checkDoorCollision(mouse,object) {
+   			 var mouseRight = (mouse.x+50);
+   			 var mouseLeft = (mouse.x-50);
+   			 var mouseTop = (mouse.y-50);
+   			 var mouseBottom = (mouse.y+160);
+   			 var midX = object.doorX+85;
+   			 var midY = object.doorY+12;
+   			 if (mouseRight > midX && mouseLeft < midX && mouseTop < midY && mouseBottom > midY && keyObtained == true && levelWon == false){
+   				 fadeTimer = setInterval(function(){fadeOut();},75);
+   				 switchLevel();
+   				 levelWon = true;
+   				 
+   			 }
+   		 
+   		 //return dir;
+   		 }
+   		 
+   		 function handleKeyDown(e) {
+   			 e.preventDefault();
+			
+   			 if (e.keyCode==37 && catCaught == false){
+				//clearInterval(stopTimer);
+			
+   				 dir = "left";
+   				 
+   			 }
+   			 if ((e.keyCode==39 && catCaught == false)){
+			 	//clearInterval(stopTimer);
+
+   				 dir = "right";
+   			
+   			 } 
+   			 if (e.keyCode==38  && catCaught == false){
+			//  clearInterval(stopTimer);
+		
+   				 dir = "up";
+   				
+   			 }
+   			if (e.keyCode==40  && catCaught == false){
+			
+   				 dir = "down";
+   				
+   			 }
+   			 if (keysPressed.indexOf(dir)==-1){
+   				 keysPressed.push(dir);
+   				 
+   			 }if(e.keyCode==39 && catCaught == true){
+				
+				var stopTimer = setInterval(function(){removeKeyCode(e)},1);
+				setTimeout(function(){clearInterval(stopTimer);},1200);
+			 }
+			 if(e.keyCode==40 && catCaught == true){
+				
+				var stopTimer = setInterval(function(){removeKeyCode(e)},1);
+				setTimeout(function(){clearInterval(stopTimer);},1200);
+			 }
+			 if (e.keyCode==38  && catCaught == true){
+			//  clearInterval(stopTimer);
+		
+   				var stopTimer = setInterval(function(){removeKeyCode(e)},1);
+				setTimeout(function(){clearInterval(stopTimer);},1200);
+   				
+   			 }
+			  if (e.keyCode==37 && catCaught == true){
+				var stopTimer = setInterval(function(){removeKeyCode(e)},1);
+				setTimeout(function(){clearInterval(stopTimer);},1200);
+   				 
+   			 }
+			console.log(dir)
+   		 }
+   		 
+   		 function removeKeyCode(e) {
+   			 var dir = "";
+   			 if (e.keyCode==37){
+   				 dir = "left";
+   			 }
+   			 if (e.keyCode==39){
+   				 dir = "right";
+   			 }
+   			 if (e.keyCode==38){
+   				 dir = "up";
+   			 }
+   			 if (e.keyCode==40){
+   				 dir = "down";
+   			 }
+   			 var i = keysPressed.indexOf(dir);
+   			 keysPressed.splice(i,1);
+   		 }
+   		 
+   		 
+   		 
+   		 function fadeOut(){
+   			 ctx.globalAlpha = alpha;
+   			 if (alpha>0){
+   				 alpha=alpha-0.1;
+   			 } else {
+   				 clearInterval(fadeTimer);
+   			 }
+   		 }
+   		 
+   		 function fadeIn(){
+   			 ctx.globalAlpha = alpha;
+   			 if (alpha<1){
+   				 alpha=alpha+0.1;
+   			 } else {
+   				 clearInterval(fadeTimer);
+   			 }
+   		 }
+   		 
+   		 function switchLevel() {
+   			 console.log(currentLevel);
+   			 setTimeout(function(){
+   				 currentLevel = currentLevel+1;
+   				 mouse1.x=roomArray[currentLevel-1].sDoorX+50;
+   				 mouse1.y=roomArray[currentLevel-1].sDoorY+50;
+   				 keyObtained=false;
+   				 levelWon=false;
+   				 updateLevel(currentLevel);
+   				 fadeTimer = setInterval(function(){fadeIn();},75);}, 3000);
+   		 }
+   		 
+   		 function updateLives(lives) {
+   			 var lives = parseInt(lives);
+   			 document.getElementById("lives").innerHTML = "| LIVES "+lives;
+   			 if (lives == 0) {
+   				 setTimeout(function(){ document.getElementById("gameOver").style.display = "block";}, 100);
+   				 setTimeout(function(){resetGame(roomArray[currentLevel-1].sDoorX+50,roomArray[currentLevel-1].sDoorY+50);}, 3000);
+   			 }
+   		 }
+   		 
+   	 </script>
+    </body>
+
+</html>

@@ -1,0 +1,106 @@
+function Cat(xPos,yPos,xSpeed,ySpeed) {
+	var moveRight = true;
+	var moveDown = true;
+	this.x = parseInt(xPos),
+	this.y = parseInt(yPos),
+	this.xSpeed = parseInt(xSpeed),
+	this.ySpeed = parseInt(ySpeed),
+	this.draw = function() {
+		ctx.translate(this.x,this.y);
+		//body
+		ctx.beginPath();
+		ctx.fillStyle = "#D69C3E";
+		ctx.moveTo(-40,40);
+		ctx.lineTo(40,40);
+		ctx.lineTo(40,140);
+		ctx.lineTo(-40,140);
+		ctx.lineTo(-40,40);
+		ctx.fill();
+		ctx.stroke();
+		//head
+		ctx.fillStyle = "#D69C3E";
+		ctx.beginPath();
+		ctx.moveTo(-50,0);
+		ctx.lineTo(-50,-60);
+		ctx.lineTo(0,-30);
+		ctx.fill();
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(50,0);
+		ctx.lineTo(50,-60);
+		ctx.lineTo(0,-30);
+		ctx.fill();
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(0, 0, 50, 0, 2*Math.PI);
+		ctx.fill();
+		ctx.arc(0, 0, 50, 0, 2*Math.PI);
+		ctx.stroke();
+		//eyes
+		ctx.beginPath();
+		ctx.arc(-20, -5, 15, 0, 2*Math.PI);
+		var rad = ctx.createRadialGradient(-25, -10, 5, -25, -10, 10, -25, -10, 15);
+		rad.addColorStop(0,'black');
+		rad.addColorStop(0.1,'green');
+		rad.addColorStop(1,'white');
+		ctx.fillStyle = rad;
+		ctx.fill();
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(20, -5, 15, 0, 2*Math.PI);
+		var rad2 = ctx.createRadialGradient(15, -10, 5, 15, -10, 10, 15, -10, 15);
+		rad2.addColorStop(0,'black');
+		rad2.addColorStop(0.1,'green');
+		rad2.addColorStop(1,'white');
+		ctx.fillStyle = rad2;
+		ctx.fill();
+		ctx.stroke();
+		//nose
+		ctx.beginPath();
+		ctx.fillStyle = "#000";
+		ctx.moveTo(-7,10);
+		ctx.lineTo(7,10);
+		ctx.lineTo(0,15);
+		ctx.fill();
+		//brows
+		ctx.beginPath();
+		ctx.moveTo(-40,-35);
+		ctx.lineTo(-5,-20);
+		ctx.lineWidth = 3;
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(40,-35);
+		ctx.lineTo(5,-20);
+		ctx.lineWidth = 3;
+		ctx.stroke();
+		//mouth
+		ctx.beginPath();
+		ctx.moveTo(-15,25);
+		ctx.lineTo(15,25);
+		ctx.lineWidth = 2;
+		ctx.stroke();
+		ctx.translate(-this.x,-this.y);
+		if (moveRight == true){
+			this.x = parseInt(this.x)+parseInt(this.xSpeed);
+			if (this.x+50 >= c.width){
+				moveRight = false;
+			}
+		} else {
+			this.x = parseInt(this.x)-parseInt(this.xSpeed);
+			if (this.x <= 50){
+				moveRight = true;
+			}
+		}
+		if (moveDown == true){
+			this.y = parseInt(this.y)+parseInt(this.ySpeed);
+			if (this.y+140 >= c.height){
+				moveDown = false;
+			}
+		} else {
+			this.y = parseInt(this.y)-parseInt(this.ySpeed);
+			if (this.y <= 60){
+				moveDown = true;
+			}
+		}
+	}
+}

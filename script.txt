@@ -1,0 +1,78 @@
+var mute = true;
+var audiochannel = {};
+audiochannel.channel = new Audio();
+
+function startGame() {
+	document.getElementById("startScreen").style.display = "none";
+}
+function toggleMenu(command) {
+	if (command == "open") {
+		document.getElementById("menu").style.display = "block";
+		//command to pause game
+	} else {
+		document.getElementById("menu").style.display = "none";
+		//command to unpause game
+	}
+}
+function toggleInstructions(command) {
+	if (command == "open") {
+		document.getElementById("instructions").style.display = "block";
+		//command to pause game
+	} else {
+		document.getElementById("instructions").style.display = "none";
+		//command to unpause game
+	}
+}
+function restart(x,y) {
+	mouse1.x = x;
+	mouse1.y = y;
+	keyObtained = false;
+}
+function resetGame(x,y) {
+	document.getElementById("startScreen").style.display = "block";
+	document.getElementById("menu").style.display = "none";
+	currentLevel = 1;
+	currentLives = 3;
+	updateLevel(currentLevel);
+	updateLives(currentLives);
+	mouse1.x = x;
+	mouse1.y = y;
+	document.getElementById("gameOver").style.display = "none";
+	keyObtained = false;
+	levelWon = false;
+}
+function toggleVolume() {
+	var button = document.getElementById("music");
+	console.log(button.src);
+	if (mute == true) {
+		button.src = "mute.png";
+		handleSound("mute");
+		console.log("mute");
+		mute = false;
+	} else if (mute == false) {
+		button.src = "volume.png";
+		handleSound("play");
+		console.log("unmute");
+		mute = true;
+	}
+}
+function handleSound(command){
+	audiochannel.channel.src = document.getElementById("audio").src;
+	audiochannel.channel.load();
+	if (command == "play") {
+		document.getElementById("audio").loop = true;
+		audiochannel.channel.play();
+	} else if (command == "mute") {
+		audiochannel.channel.pause();
+	}
+}
+function updateLevel(level) {
+	var lvl = parseInt(level);
+	document.getElementById("level").innerHTML = "LEVEL "+lvl+"/5&nbsp;";
+}
+window.onload = function() {
+	handleSound("play");
+	updateLevel(currentLevel);
+	updateLives(currentLives);
+	toggleInstructions("open");
+}
