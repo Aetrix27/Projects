@@ -1,0 +1,27 @@
+
+T* remove_entry(T* list, const T& delete_me, int& size, int& capacity){
+   if (size==capacity/4){                //Reallocates half the space when the
+        capacity*=1/2;                   //size reaches 1/4 of the capacity.
+        cout <<"Smaller space has been allocated"<<endl;
+    }
+    T* new_list = allocate(capacity);    //Allocates memory
+    shiftLeft(list, size, delete_me, new_list);
+    delete[] list;
+    return new_list;
+}
+
+
+void shiftLeft(T* &list, int& size, const T& delete_me, T* &new_list)
+{
+    T* walker1 = list;
+    T* walker2 = new_list;
+
+    for(int i=0; i<size; i++,walker1++){                //Shifts the function
+        if(find(walker1, delete_me, size)==nullptr){    //left to decrease
+            *walker2 = *walker1;                        //size and update
+            walker2++;                                  //array location.
+        }
+    }
+    size--;
+
+}
