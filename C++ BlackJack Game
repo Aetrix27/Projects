@@ -1,0 +1,307 @@
+#include <iostream>
+#include <string>
+#include <cstdlib>
+#include <cmath>
+#include <ctime>
+#include <fstream>
+#include <iomanip>
+using namespace std;
+void pickCard(string arr[], int cards[], int &sum, string suitarr[]);
+void pickSuit(string arr[]);
+void addCards(int cards[], int &sum, int copy, string arr[]);
+void printHint(ifstream& fin);
+int j=51;
+int l = 11;
+int m = 51;
+int tracker = 39;
+int indexAmount=52;
+int indexFaceAmount = 12;
+int indexFaceCard= 52;
+int sum1=0;
+int sum2 =0;
+int main() {
+    int program = 0;
+    ifstream in_stream;
+    in_stream.open("hint.txt");
+    
+    if(in_stream.fail())
+    {
+        cout << "Input file opening failed.\n";
+        exit(1);
+    }
+    
+    //    char c = in_stream.get();
+    int rowSize = 11;
+    int columnSize = 10;
+    char c[rowSize][columnSize];
+    char buffer;
+    int i = 0;
+    int j = 0;
+    
+    while ( !in_stream.eof() )
+    {
+        
+        buffer = in_stream.get();
+        
+        while ( buffer != '\n' && !in_stream.eof() )
+        {
+            c[i][j] = buffer;
+            //
+            //            //debug
+            //            cout << c[i][j];
+            //
+            buffer = in_stream.get();
+            
+            j++;
+        }
+        //
+        j = 0;
+        //        i++;
+        i++;
+    }
+    
+    
+    
+    in_stream.close();
+    
+    
+    string Suit[52] = {"Hearts","Hearts", "Hearts", "Hearts","Hearts", "Hearts", "Hearts","Hearts", "Hearts", "Hearts","Hearts", "Hearts","Hearts", "Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds","Diamonds", "Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs","Clubs", "Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades","Spades"};
+    string faceCards[12] = {"Jack","Jack","Jack","Jack","Queen","Queen","Queen","Queen","King","King","King","King"};
+    
+    int cards[52] = {0,0, 0,0,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10};
+  
+    
+    do {
+        cout << "***********************************\n";
+        cout << "1) New Hand\n2) Hit Me\n3) Stand\n4) Hint\n5) Exit\n";
+        cout << "***********************************\n";
+        
+        int choice;
+        cin >> choice;
+        
+        srand(time(0));
+      
+        
+        ifstream fin;
+        //if(choice == "1")
+        
+        //                sum1 = 0;
+        //                sum2 = 0;
+        switch(choice) {
+            case 1: {
+                if (program < 52) {
+                if (sum1 > 0 || sum2 > 0) {
+                    cout << "You cannot get a new hand until your game is finished" << endl;
+                }
+                
+                while (sum1 == 0 && sum2 == 0) {
+                    cout<<"the Dealer picked the ";
+                    pickCard(faceCards,cards,sum1,Suit);
+                   
+                   
+                    cout << endl;
+                    
+                    cout<<"You picked the ";
+                    pickCard(faceCards,cards,sum2, Suit);
+                   
+                    cout << endl;
+                    
+                    cout << "The Dealers value: " << sum1 << endl;
+                    cout << "Your value is: " << sum2 << endl;
+                    
+                    
+                    program += 2;
+                    
+                   
+                
+                }
+                
+            }
+                
+            }
+                break;
+                
+            case 2:{
+                if(program < 52) {
+                cout<<"You picked the ";
+                pickCard(faceCards,cards,sum2, Suit);
+//
+                cout << endl;
+                
+                cout << "The Dealers value: " << sum1 << endl;
+                cout << "Your value is: " << sum2 << endl;
+                    program++;
+            
+                }
+                
+            } break;
+                
+            case 3: {
+                if(program < 52) {
+                    while (sum1 < 17 && program<52) {
+                        cout<<"the Dealer picked the ";
+                        pickCard(faceCards,cards,sum1,Suit);
+                        program++;
+                    }
+                    
+                    if ((sum1<= 20 && sum2 <= 20) && sum1 > sum2) {
+                        cout << "The Dealer wins, you lose!" << endl;
+                        sum1 -= sum1;
+                        sum2 -= sum2;
+                    } else if ((sum1<=20 && sum2 <= 20) && sum1 < sum2){
+                        cout << "You won!" << endl;
+                        sum1 -= sum1;
+                        sum2 -= sum2;
+                    } else if (sum1<=20 && sum2 <= 20 && sum1 == sum2){
+                        cout << "It's a draw you pushed" << endl
+                        << sum1 << sum2 << endl;
+                        sum1 -= sum1;
+                        sum2 -= sum2;
+                    }
+                }
+            }
+            
+                break;
+                
+            case 4: {
+                
+                printHint(fin);
+                
+                for(int i = 0; i < rowSize; i++){
+                    if(i==0)
+                        cout << "5-7";
+                    else
+                        cout <<i+7;
+                    for (int j = 0; j < columnSize; j++) {
+                        cout << " " << c[i][j];
+                    }
+                    cout << endl;
+                }
+                
+                if (sum2 >=1 && sum2 <= 11) {
+                    cout << "You should Hit: " << c[0][0] << endl;
+                }
+                if (sum2 >= 12 && sum2 <= 17&& sum1>=2&&sum1<=10) {
+                    cout<<"hint:"<<c[sum2-7][sum1-2]<<endl;
+                }
+                if((sum2>=12&&sum2<=20)&&(sum1==1||sum1==11)){
+                    cout<<"hint:"<<c[sum2-7][9]<<endl;
+                }
+            }
+                break;
+            case 5: {
+                exit(1);
+            }
+                break;
+                
+            default: {
+                cout << "Not a valid entry \n";
+            }
+                break;
+                
+        }
+        
+        if (sum1 == 21 || sum2 > 21) {
+            cout << "Dealer Wins, You lost!" << endl;
+            sum1 -= sum1;
+            sum2 -= sum2;
+        } else if (sum2 == 21 || sum1 > 21) {
+            cout << "You WON!" << endl;
+            sum1 -= sum1;
+            sum2 -= sum2;
+        }
+        
+    }while(program < 50);
+    
+    cout << "You ran out of cards, Thanks for playing" << endl;
+    
+    
+    return 0;
+}
+void pickCard(string faceCards[], int cards[],int &sum, string Suit[]) {
+    int i = rand()%indexAmount;
+    //    int i=0;
+    
+    int copy = i;
+    
+    if (cards[copy]!= 0){
+        cout << cards[i];
+    }
+    for(i;i<52;++i){
+        cards[i] = cards[i+1];
+    }
+   
+    
+    if (copy > tracker) {
+        int randomFaceCard = rand()%indexFaceAmount;
+        int copyFaceCard = randomFaceCard;
+        cout<< " " << faceCards[copyFaceCard];
+        for(randomFaceCard;randomFaceCard<12;++randomFaceCard){
+            faceCards[randomFaceCard] = faceCards[randomFaceCard+1];
+        }
+        
+        indexFaceAmount--;
+    }
+    if (copy <= tracker) {
+        tracker--;
+    }
+    
+    addCards(cards,sum,copy,Suit);
+    
+    
+    indexAmount--;
+}
+void addCards(int cards[],int &sum, int copy, string Suit[]){
+    if (sum == sum1 && cards[copy] == 0) {
+        cout << "Ace";
+        pickSuit(Suit);
+        int n = rand()%2;
+        if (n == 0){
+            sum += 1;
+        } else {
+            sum += 11;
+        }
+    }
+    else if (sum == sum2 && cards[copy] == 0)
+    {   cout << "Ace";
+        pickSuit(Suit);
+        int input;
+        cout<<"Do you want a 1 or 11?" <<endl;
+        cin >> input;
+        if(input == 1)
+            sum+=1;
+        else if(input==11)
+            sum+=11;
+    } else {
+        
+        
+        pickSuit(Suit);
+        
+    }
+    sum += cards[copy];
+    
+}
+void pickSuit(string Suit[]) {
+    int o = rand()% indexFaceCard;
+    int Copy = o;
+    cout << " of " << Suit[Copy] << endl;
+    for(o;o<indexFaceCard;++o){
+        Suit[o] = Suit[o+1];
+    }
+    indexFaceCard--;
+}
+void printHint(ifstream& fin) {
+    string line;
+    cout << setw(1) << left << "Player 2 3 4 5 6 7 8 9 10 A" << endl;
+    int i = 0;
+    while(getline(fin, line)) {
+        if(i == 0) {
+            cout << setw(20) << "5-7:  ";
+        } else cout << setw(4) << i + 7 << " ";
+        for(char x:line) {
+            cout << setw(4) << x;
+        }
+        i++;
+        cout << endl;
+    }
+}
